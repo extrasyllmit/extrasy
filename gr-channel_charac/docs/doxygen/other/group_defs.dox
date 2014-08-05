@@ -1,0 +1,7 @@
+/*!
+ * \defgroup block GNU Radio CHANNEL_CHARAC C++ Signal Processing Blocks
+ * \brief All C++ blocks that can be used from the CHANNEL_CHARAC GNU Radio
+ *        module are listed here or in the subcategories below.
+ *
+ */
+

@@ -1,0 +1,74 @@
+From b8a625cca2a64d29891d7b2480486181b0575a45 Mon Sep 17 00:00:00 2001
+From: cr22845 <craig.pomeroy@ll.mit.edu>
+Date: Fri, 7 Feb 2014 17:16:55 -0500
+Subject: [PATCH] patch to fix rx_rate for rrate !=1 and exposing tag
+ propagation policies to python
+
+---
+ gnuradio-core/src/lib/runtime/gr_block.i           |    6 ++++++
+ gnuradio-core/src/lib/runtime/gr_block_executor.cc |   18 ++++++++++++++++--
+ 2 files changed, 22 insertions(+), 2 deletions(-)
+
+diff --git a/gnuradio-core/src/lib/runtime/gr_block.i b/gnuradio-core/src/lib/runtime/gr_block.i
+index db6c1d0..d5a4bfe 100644
+--- a/gnuradio-core/src/lib/runtime/gr_block.i
++++ b/gnuradio-core/src/lib/runtime/gr_block.i
+@@ -38,6 +38,12 @@ class gr_block : public gr_basic_block {
+             gr_io_signature_sptr output_signature);
+ 
+  public:
++ 
++  enum tag_propagation_policy_t {
++    TPP_DONT = 0,
++    TPP_ALL_TO_ALL = 1,
++    TPP_ONE_TO_ONE = 2
++  };
+ 
+   virtual ~gr_block ();
+ 
+diff --git a/gnuradio-core/src/lib/runtime/gr_block_executor.cc b/gnuradio-core/src/lib/runtime/gr_block_executor.cc
+index 375b58f..41bc493 100644
+--- a/gnuradio-core/src/lib/runtime/gr_block_executor.cc
++++ b/gnuradio-core/src/lib/runtime/gr_block_executor.cc
+@@ -120,6 +120,13 @@ propagate_tags(gr_block::tag_propagation_policy_t policy, gr_block_detail *d,
+ 	for(t = rtags.begin(); t != rtags.end(); t++) {
+ 	  gr_tag_t new_tag = *t;
+ 	  new_tag.offset *= rrate;
++
++	  if ( pmt::pmt_symbol_to_string(new_tag.key).compare("rx_rate") ==0)
++	  {
++		  double old_rate = pmt::pmt_to_double(new_tag.value);
++		  new_tag.value = pmt::pmt_from_double(old_rate*rrate);
++	  }
++
+ 	  for(int o = 0; o < d->noutputs(); o++)
+ 	    d->output(o)->add_item_tag(new_tag);
+ 	}
+@@ -139,6 +146,13 @@ propagate_tags(gr_block::tag_propagation_policy_t policy, gr_block_detail *d,
+ 	for(t = rtags.begin(); t != rtags.end(); t++) {
+ 	  gr_tag_t new_tag = *t;
+ 	  new_tag.offset *= rrate;
++
++	  if ( pmt::pmt_symbol_to_string(new_tag.key).compare("rx_rate") ==0)
++	  {
++		  double old_rate = pmt::pmt_to_double(new_tag.value);
++		  new_tag.value = pmt::pmt_from_double(old_rate*rrate);
++	  }
++
+ 	  d->output(i)->add_item_tag(new_tag);
+ 	}
+       }
+@@ -452,8 +466,8 @@ gr_block_executor::run_one_iteration()
+     /*
+     // If this is a source, it's broken.
+     if (d->source_p()){
+-      std::cerr << "gr_block_executor: source " << m
+-		<< " produced no output.  We're marking it DONE.\n";
++      //std::cerr << "gr_block_executor: source " << m
++		//<< " produced no output.  We're marking it DONE.\n";
+       // FIXME maybe we ought to raise an exception...
+       goto were_done;
+     }
+-- 
+1.7.9.5
+

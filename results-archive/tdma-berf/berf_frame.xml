@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+################################################################################
+## Frame Configuration Format
+################################################################################
+This file is used to specify the frame structure to be used by the base station.
+The 
+Valid frame specifications have the following contents:
+
+Name:      Type:     Comments:
+frame_len  float     Total length of the frame, in seconds
+slots      struct    Each frame contains at least one slots object. Slots should
+                     not overlap in time. The sum of the lengths of the slots
+                     in a frame should not exceed the frame_len. No slot should
+                     extend past the end of the frame. 
+
+Valid slots have the following contents:
+
+Name:      Type:     Comments:
+owner      int       MAC address of the node assigned to the slot. Beacons are
+                     always owned by the base station. Negative slot owners mean
+                     that the slot is unassigned and may be assigned to some
+                     node by the base station.
+len        float     Length of the slot, in seconds
+offset     float     start time of the slot with respect to the start of the 
+                     frame
+type       string    One of the following: {beacon, uplink, downlink}
+rf_freq    float     center frequency of the slot. Not currently used.
+bb_freq    int       Channel number of the slot, used by the channelizer. Range
+                     is 0:number of digital channels-1. This field is ignored
+                     if the channelizer is not in used
+bw         float     bandwidth of the slot, in Hz. Not currently used.  
+ -->
+<!--
+################################################################################
+## DTD Scheme. Keep so the parser can validate the xml formatting
+################################################################################
+ -->
+<!DOCTYPE frame [
+	<!ELEMENT frame (frame_len, slots+)>
+	<!ELEMENT frame_len (#PCDATA)>
+	<!ELEMENT slots (owner, len, offset, type, rf_freq, bb_freq, bw)>
+	<!ELEMENT owner (#PCDATA)>
+	<!ELEMENT len (#PCDATA)>
+	<!ELEMENT offset (#PCDATA)>
+	<!ELEMENT type (#PCDATA)>
+	<!ELEMENT rf_freq (#PCDATA)>
+	<!ELEMENT bb_freq (#PCDATA)>
+	<!ELEMENT bw (#PCDATA)>
+]>
+<!--
+###################################################
+## Frame Configuration
+###################################################
+ -->
+
+ <!-- designed for payload_size = 600 bytes -->
+<frame>
+	<frame_len>0.440</frame_len>
+	<slots><owner> 1</owner><len>0.088</len><offset>0.000</offset><type>  beacon</type><rf_freq>910e6</rf_freq><bb_freq>7</bb_freq><bw>312500</bw></slots>
+	<slots><owner>-1</owner><len>0.088</len><offset>0.088</offset><type>downlink</type><rf_freq>910e6</rf_freq><bb_freq>0</bb_freq><bw>312500</bw></slots>
+	<slots><owner>-1</owner><len>0.088</len><offset>0.176</offset><type>downlink</type><rf_freq>910e6</rf_freq><bb_freq>0</bb_freq><bw>312500</bw></slots>
+	<slots><owner>-1</owner><len>0.088</len><offset>0.264</offset><type>  uplink</type><rf_freq>910e6</rf_freq><bb_freq>0</bb_freq><bw>312500</bw></slots>
+	<slots><owner>-1</owner><len>0.088</len><offset>0.352</offset><type>  uplink</type><rf_freq>910e6</rf_freq><bb_freq>0</bb_freq><bw>312500</bw></slots>
+</frame>
+

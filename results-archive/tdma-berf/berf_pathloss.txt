@@ -1,0 +1,43 @@
+------------------------------------------------------------------------
+ 1) PATHLOSS MEASUREMENT DIRECTORIES
+------------------------------------------------------------------------
+Open a new terminal for each node. (hereafter called "terminal 0" for the node)
+Enter each of the following in terminal 0 for all nodes
+[No space before or after "=" sign on command lines calls]
+
+export testdir=YOUR_PATH_HERE
+export testnum=tdma-berf
+export infodir="${testdir}/${testnum}"
+export logsdir="${testdir}/${testnum}/logs"
+
+mkdir -p "${testdir}/${testnum}/logs"
+
+
+------------------------------------------------------------------------
+ 2) PATHLOSS MEASUREMENT COMMANDS
+------------------------------------------------------------------------
+Enter the following in terminal 0 of the appropriate node
+
+Node 1 _____________________________________________________________________
+./channel_char.py --num-nodes=3 --node-id=1 --samp-rate=4e5 --rf-cf=910e6 --rf-tx-gain=20 --rf-rx-gain=10 --num-averages=10000 --num-tx-tones=32 | tee "${logsdir}/pathloss_log_node1.txt"
+
+Node 2 _____________________________________________________________________
+./channel_char.py --num-nodes=3 --node-id=2 --samp-rate=4e5 --rf-cf=910e6 --rf-tx-gain=20 --rf-rx-gain=10 --num-averages=10000 --num-tx-tones=32 | tee "${logsdir}/pathloss_log_node2.txt"
+
+Node 3 _____________________________________________________________________
+./channel_char.py --num-nodes=3 --node-id=3 --samp-rate=4e5 --rf-cf=910e6 --rf-tx-gain=20 --rf-rx-gain=10 --num-averages=10000 --num-tx-tones=32 | tee "${logsdir}/pathloss_log_node3.txt"
+
+
+------------------------------------------------------------------------
+ PATHLOSS RESULTS SUMMARY
+------------------------------------------------------------------------
+Measured on 2014-02-20
+
+                           MEASURED PATHLOSS (dB)
+RX \ TX    node 1         node 2         node 3  
+
+node 1     68.5 +/-1      68.5 +/-1      68.5 +/-1
+
+node 2     68.5 +/-1      68.5 +/-1      68.5 +/-1
+
+node 3     68.5 +/-1      68.5 +/-1      68.5 +/-1

@@ -1,0 +1,59 @@
+linux; GNU C++ version 4.6.3; Boost_104601; UHD_003.005.000-26-gb65a3924
+
+-- Opening a USRP2/N-Series device...
+-- Current recv frame size: 1472 bytes
+-- Current send frame size: 1472 bytes
+-- Detecting internal GPSDO.... Found a Jackson Labs GPS
+-- found
+-- Setting references to the internal GPSDO
+-- Initializing time to the internal GPSDO
+************************************************************
+Reporting for Node 3
+    My Tx signal PAPR = 1.81549315685
+    Maximum scaled sample = 0.866025403784
+    Center Freq = 910.0 MHz
+    Bandwidth  = 400.0 kHz
+    Tx Gain = 20.0 dB
+    Rx Gain =  10.0 dB
+    Digital Scaling = 1
+    K = 12 (bins occupied)
+    NFFT = 32 (bins total)
+-------------------------
+Pathloss and SNR Results:
+From Tx No. 1
+    Transmitted Discrete Signal Power: -3.0103000 dB/samp
+    Received Discretized Signal Power: -38.5119542 dB/samp
+    Received Discretized Noise Power:  -85.8197227 dB/samp
+    Received Tx Floor Power:           -55.5559643 dB/samp
+    Estimated Transmitted Power at Tx: 18.0054540 dBm
+    Estimated Received Power at Rx:    -53.7266042 dBm
+    Estimated Noise Power at Rx:       -101.0343727 dBm
+    Estimated Power of Tx Floor at Rx: -70.7706143 dBm
+    Estimated Path Loss between Tx/Rx: 71.7320583 dB
+    Signal to Noise Ratio:             47.3077685 dB
+    Signal to Tx Floor Ratio:          17.0440100 dB
+From Tx No. 2
+    Transmitted Discrete Signal Power: -3.0103000 dB/samp
+    Received Discretized Signal Power: -37.6381358 dB/samp
+    Received Discretized Noise Power:  -85.8197227 dB/samp
+    Received Tx Floor Power:           -55.5559643 dB/samp
+    Estimated Transmitted Power at Tx: 18.0054540 dBm
+    Estimated Received Power at Rx:    -52.8527858 dBm
+    Estimated Noise Power at Rx:       -101.0343727 dBm
+    Estimated Power of Tx Floor at Rx: -70.7706143 dBm
+    Estimated Path Loss between Tx/Rx: 70.8582398 dB
+    Signal to Noise Ratio:             48.1815870 dB
+    Signal to Tx Floor Ratio:          17.9178285 dB
+From Tx No. 3 (ie, Me!)
+    Transmitted Discrete Signal Power: -3.0103000 dB/samp
+    Received Discretized Signal Power: -17.8472718 dB/samp
+    Received Discretized Noise Power:  -85.8197227 dB/samp
+    Received Tx Floor Power:           -55.5559643 dB/samp
+    Estimated Transmitted Power at Tx: 18.0054540 dBm
+    Estimated Received Power at Rx:    -33.0619218 dBm
+    Estimated Noise Power at Rx:       -101.0343727 dBm
+    Estimated Power of Tx Floor at Rx: -70.7706143 dBm
+    Estimated Path Loss between Tx/Rx: 51.0673759 dB
+    Signal to Noise Ratio:             67.9724510 dB
+    Signal to Tx Floor Ratio:          37.7086926 dB
+************************************************************

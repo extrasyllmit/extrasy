@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+#
+# This file is part of ExtRaSy
+#
+# Copyright (C) 2013-2014 Massachusetts Institute of Technology
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+################################################################################
+## Frame Configuration Format
+################################################################################
+This file is used to specify the frame structure to be used by the base station.
+The 
+Valid frame specifications have the following contents:
+
+Name:      Type:     Comments:
+frame_len  float     Total length of the frame, in seconds
+slots      struct    Each frame contains at least one slots object. Slots should
+                     not overlap in time. The sum of the lengths of the slots
+                     in a frame should not exceed the frame_len. No slot should
+                     extend past the end of the frame. 
+
+Valid slots have the following contents:
+
+Name:      Type:     Comments:
+owner      int       MAC address of the node assigned to the slot. Beacons are
+                     always owned by the base station. Negative slot owners mean
+                     that the slot is unassigned and may be assigned to some
+                     node by the base station.
+len        float     Length of the slot, in seconds
+offset     float     start time of the slot with respect to the start of the 
+                     frame
+type       string    One of the following: {beacon, uplink, downlink}
+rf_freq    float     center frequency of the slot. Not currently used.
+bb_freq    int       Channel number of the slot, used by the channelizer. Range
+                     is 0:number of digital channels-1. This field is ignored
+                     if the channelizer is not in used
+bw         float     bandwidth of the slot, in Hz. Not currently used.  
+ -->
+<!--
+################################################################################
+## DTD Scheme. Keep so the parser can validate the xml formatting
+################################################################################
+ -->
+<!DOCTYPE frame [
+	<!ELEMENT frame (frame_len, slots+)>
+	<!ELEMENT frame_len (#PCDATA)>
+	<!ELEMENT slots (owner, len, offset, type, rf_freq, bb_freq, bw)>
+	<!ELEMENT owner (#PCDATA)>
+	<!ELEMENT len (#PCDATA)>
+	<!ELEMENT offset (#PCDATA)>
+	<!ELEMENT type (#PCDATA)>
+	<!ELEMENT rf_freq (#PCDATA)>
+	<!ELEMENT bb_freq (#PCDATA)>
+	<!ELEMENT bw (#PCDATA)>
+]>
+<frame>
+	<frame_len>1.0</frame_len>
+	<slots><owner> 1</owner><len>0.2</len><offset>0.0</offset><type>  beacon</type><rf_freq>720e6</rf_freq><bb_freq>0</bb_freq><bw>1e6</bw></slots>
+	<slots><owner>-1</owner><len>0.2</len><offset>0.2</offset><type>downlink</type><rf_freq>720e6</rf_freq><bb_freq>1</bb_freq><bw>1e6</bw></slots>
+	<slots><owner>-1</owner><len>0.2</len><offset>0.4</offset><type>downlink</type><rf_freq>720e6</rf_freq><bb_freq>2</bb_freq><bw>1e6</bw></slots>
+	<slots><owner>-1</owner><len>0.2</len><offset>0.6</offset><type>  uplink</type><rf_freq>720e6</rf_freq><bb_freq>2</bb_freq><bw>1e6</bw></slots>
+	<slots><owner>-1</owner><len>0.2</len><offset>0.8</offset><type>  uplink</type><rf_freq>720e6</rf_freq><bb_freq>3</bb_freq><bw>1e6</bw></slots>
+</frame>
+

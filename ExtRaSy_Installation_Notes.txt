@@ -1,0 +1,276 @@
+################################################################################
+#
+# Scope:
+#
+################################################################################
+This file lists the steps used to install ExtRaSy during development. It is not 
+meant to be a comprehensive guide on how to set up Ubuntu, install GNU Radio, 
+or install the Ettus UHD Driver. 
+
+This software was developed against the following:
+UHD release_003_005_000, commit b65a3924808b48e170042f1f8ca416bd985a852f
+GNU Radio v3.6.3, commit 607a6fa3f80e08298ce7b3ee74ffca1590c05164
+
+
+It is assumed that host computer is running Ubuntu 12.04 64 bit with all the 
+necessary dependencies for GNU Radio and UHD installed. 
+
+################################################################################
+#
+# USRP GPS Configuration:
+#
+################################################################################
+# For New USRPS:
+# To configure the USRP to communicate with the GPSDO, use the 
+# usrp_burn_mb_eeprom utility:
+
+cd <install-path>/share/uhd/utils
+./usrp_burn_mb_eeprom --args=<optional device args> --key=gpsdo --val=internal
+
+# In addition, you have to change an hardware switch on the USRP board. Refer to 
+# the instructions that came with your USRP or see 
+# http://www.ettus.com/content/files/gpsdo-kit_2.pdf
+
+# Power Cycle your USRPs. If you don't actually power cycle them after the 
+# eeprom update, the GPSDO will not work. 
+
+# Wait 5-10 minutes after power cycling for the oscillator to lock to GPS and 
+# stabilize. 
+
+################################################################################
+#
+# GPS and Host Clock Verification:
+#
+################################################################################
+
+# Use clusterssh (cssh) to compare the host clocks on the host machines in your
+# testbed. They should all be relatively close (~ 1 sec error is ok) 
+
+# You can start a new clusterssh session with the following command, where 
+# machine1, machine2, etc are your host names.
+cssh machine1 machine2 machine3
+
+# Run the following commands in the clusterssh command window
+date +%s
+
+# The time should be close across your machines, otherwise you need to sync your
+# clocks via ntp or the sync_to_GPS utility in $GR_INSTALL_PREFIX/bin
+
+
+# Validate GPSDO functionality: Run the gpsdo query utility
+
+cd $GR_INSTALL_PREFIX/share/uhd/utils
+./query_gpsdo_sensors
+
+# Look for the following lines: 
+
+-- Detecting internal GPSDO.... Found a Jackson Labs GPS
+-- found
+-- Setting references to the internal GPSDO
+-- Initializing time to the internal GPSDO
+
+# If you don't see these lines, then either the GPSDO is not connected properly,
+# not configured properly in the USRP eeprom, or the USRP wasn't power cycled 
+# after the update. See the section above labeled "For New USRPS:"
+
+# You should also see the following:
+
+**************************************Helpful Notes on Clock/PPS Selection**************************************
+As you can see, the default 10 MHz Reference and 1 PPS signals are now from the GPSDO.
+If you would like to use the internal reference(TCXO) in other applications, you must configure that explicitly.
+You can no longer select the external SMAs for 10 MHz or 1 PPS signaling.
+****************************************************************************************************************
+GPS Locked
+USRP Locked to GPSDO 10 MHz Reference.
+
+# Verify that you see both "GPS Locked" and "USRP Locked to GPSDO"
+
+# You may see the following error:
+
+GPS and UHD Device time are NOT aligned. Try re-running the program. Double check 1 PPS connection from GPSDO.
+
+# This is not necessarily a show stopper. Verify that the GPS epoch time and
+# UHD Device time differ by no more than 1 second. We've come across this issue
+# and have a workaround for it. 
+
+# Also verify that the GPS epoch time is reasonable. You can get the current 
+# system time with the following command:
+date +%s
+
+# The system time should be within a few seconds of the gps time for best 
+# results during automated testing. 
+
+# If the GPS will not lock after 10 minutes and multiple tries with 
+# query_gpsdo_sensors, you should verify that the GPSDO module is installed 
+# properly. See http://www.ettus.com/content/files/gpsdo-kit_2.pdf or contact
+# Ettus for support. 
+
+
+################################################################################
+#
+# Tuntap Permissions:
+#
+################################################################################
+
+# Use of the automatically configured tuntap interface requrires sudo rights.
+# Users working with this capability should be members of the sdr group. 
+
+# add sdr group
+sudo addgroup sdr
+
+# add user to sudo ( replace <username> with actual username)
+sudo adduser <username> sudo
+
+# add user to sdr ( replace <username> with actual username)
+sudo adduser <username> sdr
+
+# repeat as neccessary. If more than one user will be running tests, ensure that
+# the user permissions will allow for shared read and write access of 
+# directories with users in the sdr group, and that files are created with sdr 
+# group ownership by default
+
+################################################################################
+#
+# Sudo Command Whitelist For sdr Group Users:
+#
+################################################################################
+# Add sudo command whitelist for sdr group users
+
+# It's reccommended that someone who knows the actual root password be on hand 
+# for this step, in case something goes wrong. Mistakes here can disable the 
+# sudo command. 
+
+# Create a file named "sdr_sudoers" in your current working directory
+# Modify the new sdr_sudoers to have the following contents: 
+
+#----------------- Start Cut and paste on following line ---------------------->
+
+# Cmnd alias specification  
+%sdr ALL=(ALL:ALL) NOPASSWD: /sbin/ip, /sbin/ifconfig, /usr/sbin/arp
+
+#------------------- End cut and paste at previous line ----------------------->
+
+# the whitelist allows sdr users to create and remove TUN/TAP devices with the  
+# ip command, sync the host clock to the GPS PPS strobe, and configure TUN/TAP 
+# device IP addresses without entering a password, enabling these actions to be
+# scripted
+
+# change ownership and access rights
+sudo chmod 440 sdr_sudoers
+sudo chown root:root sdr_sudoers
+
+# move sdr_sudoers to /etc/sudoers.d/
+sudo mv sdr_sudoers /etc/sudoers.d/
+
+# Start a fresh login session with a user in the sdr group and test the sudo 
+# whitelist
+sudo ip 
+
+# if everything is working correctly, the user should not be prompted for a 
+# password and see the following output. If you get prompted for a password,
+# something went wrong in this step.
+
+Usage: ip [ OPTIONS ] OBJECT { COMMAND | help }
+       ip [ -force ] -batch filename
+where  OBJECT := { link | addr | addrlabel | route | rule | neigh | ntable |
+                   tunnel | tuntap | maddr | mroute | mrule | monitor | 
+xfrm |
+                   netns }
+       OPTIONS := { -V[ersion] | -s[tatistics] | -d[etails] | -r[esolve] |
+                    -f[amily] { inet | inet6 | ipx | dnet | link } |
+                    -l[oops] { maximum-addr-flush-attempts } |
+                    -o[neline] | -t[imestamp] | -b[atch] [filename] |
+                    -rc[vbuf] [size]}
+
+
+################################################################################
+#
+# Configure Environment Variables:
+#
+################################################################################
+# This will let you install GNU Radio, UHD, and ExtRaSy to a user defined 
+# location instead of overwriting whatever is in /usr/local
+
+# add/change this in your .bashrc file
+
+# GNU Radio installation
+export GR_INSTALL_PREFIX=/opt/SDR/gnuradio-3_6_3
+export PATH=$GR_INSTALL_PREFIX/bin:$PATH
+export LD_LIBRARY_PATH=$GR_INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=$GR_INSTALL_PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH
+export PYTHONPATH=$GR_INSTALL_PREFIX/lib/python2.7/dist-packages
+
+# either log out, and log back in, or run
+source ~/.bashrc
+
+################################################################################
+#
+# Patch GNU Radio:
+#
+################################################################################
+# download a recent gnuradio source package (at least 3.6.4)
+# from inside the gnuradio source tree, run the following
+git checkout v3.6.3
+# pull in the messaging interface from python from a later checkout
+git cherry-pick 5ab960295f00991fa9447819b3ff9eaf8d88d28e 
+
+# copy gr_block_executor_rx_rate_fix.patch included with ExtRaSy to the gnuradio
+# source tree
+# apply ExtRaSy specific updates 
+git apply gr_block_executor_rx_rate_fix.patch
+
+# run the following to compile and install the gnuradio update
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=$GR_INSTALL_PREFIX -DCMAKE_BUILD_TYPE=Release ../
+make -j7
+sudo make install
+sudo ldconfig
+
+
+################################################################################
+#
+# Other dependencies:
+#
+################################################################################
+# Scripts that plot node performance require a few things.
+
+# install numpy and matplotlib
+
+# get JSONlab
+Download Link: http://www.mathworks.com/matlabcentral/fileexchange/33381-jsonlab-a-toolbox-to-encodedecode-json-files-in-matlaboctave 
+# extract it to jsonlab at the top level of the ExtRaSy source tree
+
+# get XML Toolbox
+Download Link: http://www.mathworks.com/matlabcentral/fileexchange/4278-xml-toolbox 
+# extract it to xml_toolbox at the top level of the ExtRaSy source tree
+
+################################################################################
+#
+# Build and install ExtRaSy:
+#
+################################################################################
+# from the top level of the ExtRaSy source tree
+cd gr-channel_charac
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=$GR_INSTALL_PREFIX -DCMAKE_BUILD_TYPE=Release ../
+make -j7
+sudo make install
+sudo ldconfig
+
+cd ../../gr-digital_ll
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=$GR_INSTALL_PREFIX -DCMAKE_BUILD_TYPE=Release ../
+make -j7
+sudo make install
+sudo ldconfig
+
+cd ../../gr-mac_ll
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=$GR_INSTALL_PREFIX -DCMAKE_BUILD_TYPE=Release ../
+make -j7
+sudo make install
+sudo ldconfig
+

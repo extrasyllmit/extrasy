@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!--
+#
+# This file is part of ExtRaSy
+#
+# Copyright (C) 2013-2014 Massachusetts Institute of Technology
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# 
+# This file incorporates work covered by the following copyright:
+#
+#
+# Copyright 2011 Free Software Foundation, Inc.
+#  
+# This file is part of GNU Radio
+# 
+# GNU Radio is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+# 
+# GNU Radio is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with GNU Radio; see the file COPYING.  If not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street,
+# Boston, MA 02110-1301, USA.
+###################################################
+##Clock Recovery MM
+###################################################
+ -->
+<block>
+	<name>Clock Recovery MM</name>
+	<key>digital_ll_clock_recovery_mm_xx</key>
+	<import>import digital_ll</import>
+	<make>digital_ll.clock_recovery_mm_$(type.fcn)($omega, $gain_omega, $mu, $gain_mu, $omega_relative_limit)</make>
+	<callback>set_omega($omega)</callback>
+	<callback>set_gain_omega($gain_omega)</callback>
+	<callback>set_mu($mu)</callback>
+	<callback>set_gain_mu($gain_mu)</callback>
+	<param>
+		<name>Type</name>
+		<key>type</key>
+		<type>enum</type>
+		<option>
+			<name>Complex</name>
+			<key>complex</key>
+			<opt>fcn:cc</opt>
+		</option>
+		<option>
+			<name>Float</name>
+			<key>float</key>
+			<opt>fcn:ff</opt>
+		</option>
+	</param>
+	<param>
+		<name>Omega</name>
+		<key>omega</key>
+		<type>real</type>
+	</param>
+	<param>
+		<name>Gain Omega</name>
+		<key>gain_omega</key>
+		<type>real</type>
+	</param>
+	<param>
+		<name>Mu</name>
+		<key>mu</key>
+		<type>real</type>
+	</param>
+	<param>
+		<name>Gain Mu</name>
+		<key>gain_mu</key>
+		<type>real</type>
+	</param>
+	<param>
+		<name>Omega Relative Limit</name>
+		<key>omega_relative_limit</key>
+		<type>real</type>
+	</param>
+	<sink>
+		<name>in</name>
+		<type>$type</type>
+	</sink>
+	<source>
+		<name>out</name>
+		<type>$type</type>
+	</source>
+</block>

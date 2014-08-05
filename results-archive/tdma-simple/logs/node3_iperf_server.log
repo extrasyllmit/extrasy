@@ -1,0 +1,24 @@
+------------------------------------------------------------
+Server listening on UDP port 5003
+Receiving 600 byte datagrams
+UDP buffer size:  224 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.200.3 port 5003 connected with 192.168.200.2 port 41564
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0-10.0 sec  25.8 KBytes  21.1 Kbits/sec  199.733 ms    0/   44 (0%)
+[  3] 10.0-20.0 sec  27.0 KBytes  22.1 Kbits/sec  212.572 ms    0/   46 (0%)
+[  3] 20.0-30.0 sec  27.0 KBytes  22.1 Kbits/sec  213.459 ms    0/   46 (0%)
+[  3] 30.0-40.0 sec  25.8 KBytes  21.1 Kbits/sec  213.602 ms    0/   44 (0%)
+[  3] 40.0-50.0 sec  27.0 KBytes  22.1 Kbits/sec  213.444 ms    0/   46 (0%)
+[  3] 50.0-60.0 sec  27.0 KBytes  22.1 Kbits/sec  213.656 ms    0/   46 (0%)
+[  3] 60.0-70.0 sec  27.0 KBytes  22.1 Kbits/sec  213.688 ms    0/   46 (0%)
+[  3] 70.0-80.0 sec  25.8 KBytes  21.1 Kbits/sec  213.682 ms    0/   44 (0%)
+[  3] 80.0-90.0 sec  27.0 KBytes  22.1 Kbits/sec  213.621 ms    0/   46 (0%)
+[  3] 90.0-100.0 sec  27.0 KBytes  22.1 Kbits/sec  213.645 ms    0/   46 (0%)
+[  3] 100.0-110.0 sec  25.8 KBytes  21.1 Kbits/sec  213.370 ms    0/   44 (0%)
+[  3] 110.0-120.0 sec  27.0 KBytes  22.1 Kbits/sec  213.231 ms    0/   46 (0%)
+[  3] 120.0-130.0 sec  27.0 KBytes  22.1 Kbits/sec  213.489 ms    0/   46 (0%)
+[  3] 130.0-140.0 sec  27.0 KBytes  22.1 Kbits/sec  213.638 ms    0/   46 (0%)
+[  3] 140.0-150.0 sec  25.8 KBytes  21.1 Kbits/sec  378.249 ms  150/  194 (77%)
+[  3] 150.0-160.0 sec  27.0 KBytes  22.1 Kbits/sec  389.347 ms  165/  211 (78%)
+[  3] 160.0-170.0 sec  27.0 KBytes  22.1 Kbits/sec  390.745 ms  165/  211 (78%)

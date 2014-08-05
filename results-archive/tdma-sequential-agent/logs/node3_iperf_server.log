@@ -1,0 +1,36 @@
+------------------------------------------------------------
+Server listening on UDP port 5003
+Receiving 500 byte datagrams
+UDP buffer size:  224 KByte (default)
+------------------------------------------------------------
+[  3] local 192.168.200.3 port 5003 connected with 192.168.200.1 port 33119
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  3]  0.0-10.0 sec  22.0 KBytes  18.0 Kbits/sec  169.445 ms    0/   45 (0%)
+[  3] 10.0-20.0 sec  22.0 KBytes  18.0 Kbits/sec  179.344 ms    0/   45 (0%)
+[  3] 20.0-30.0 sec  22.5 KBytes  18.4 Kbits/sec  81.694 ms   68/  114 (60%)
+[  3] 30.0-40.0 sec  22.0 KBytes  18.0 Kbits/sec  23.028 ms  202/  247 (82%)
+[  3] 40.0-50.0 sec  22.5 KBytes  18.4 Kbits/sec  19.904 ms  207/  253 (82%)
+[  3] 50.0-60.0 sec  22.0 KBytes  18.0 Kbits/sec  19.980 ms  203/  248 (82%)
+[  3] 60.0-70.0 sec  22.5 KBytes  18.4 Kbits/sec  19.549 ms  207/  253 (82%)
+[  3] 70.0-80.0 sec  22.0 KBytes  18.0 Kbits/sec  20.140 ms  202/  247 (82%)
+[  3] 80.0-90.0 sec  22.5 KBytes  18.4 Kbits/sec  19.777 ms  207/  253 (82%)
+[  3] 90.0-100.0 sec  22.0 KBytes  18.0 Kbits/sec  19.950 ms  203/  248 (82%)
+[  3] 100.0-110.0 sec  22.0 KBytes  18.0 Kbits/sec  20.478 ms  202/  247 (82%)
+[  3] 110.0-120.0 sec  22.5 KBytes  18.4 Kbits/sec  19.960 ms  207/  253 (82%)
+[  3] 120.0-130.0 sec  22.0 KBytes  18.0 Kbits/sec  20.127 ms  203/  248 (82%)
+[  3] 130.0-140.0 sec  22.5 KBytes  18.4 Kbits/sec  19.882 ms  207/  253 (82%)
+[  3] 140.0-150.0 sec  22.0 KBytes  18.0 Kbits/sec  19.935 ms  202/  247 (82%)
+[  3] 150.0-160.0 sec  22.5 KBytes  18.4 Kbits/sec  19.664 ms  207/  253 (82%)
+[  3] 160.0-170.0 sec  22.0 KBytes  18.0 Kbits/sec  19.491 ms  203/  248 (82%)
+[  3] 170.0-180.0 sec  22.5 KBytes  18.4 Kbits/sec  20.198 ms  207/  253 (82%)
+[  3] 180.0-190.0 sec  22.0 KBytes  18.0 Kbits/sec  19.688 ms  202/  247 (82%)
+[  3] 190.0-200.0 sec  22.5 KBytes  18.4 Kbits/sec  20.424 ms  207/  253 (82%)
+[  3] 200.0-210.0 sec  22.0 KBytes  18.0 Kbits/sec  20.283 ms  203/  248 (82%)
+[  3] 210.0-220.0 sec  22.0 KBytes  18.0 Kbits/sec  19.723 ms  202/  247 (82%)
+[  3] 220.0-230.0 sec  22.5 KBytes  18.4 Kbits/sec  19.783 ms  207/  253 (82%)
+[  3] 230.0-240.0 sec  22.0 KBytes  18.0 Kbits/sec  18.784 ms  203/  248 (82%)
+[  3] 240.0-250.0 sec  22.5 KBytes  18.4 Kbits/sec  19.682 ms  207/  253 (82%)
+[  3] 250.0-260.0 sec  22.0 KBytes  18.0 Kbits/sec  19.359 ms  202/  247 (82%)
+[  3] 260.0-270.0 sec  22.5 KBytes  18.4 Kbits/sec  19.408 ms  207/  253 (82%)
+[  3] 270.0-280.0 sec  22.0 KBytes  18.0 Kbits/sec  20.129 ms  203/  248 (82%)
+[  3] 280.0-290.0 sec  22.5 KBytes  18.4 Kbits/sec  20.205 ms  207/  253 (82%)

@@ -1,0 +1,278 @@
+# This document provides information on the parameters used by channel_char.py 
+# for channel sounding
+
+#===========================================================================
+#[CHANNEL SOUNDING] MID-LEVEL PARAMETERS
+#===========================================================================
+# Name: Toggle Channel Sounding On/Off
+# Description: This field tells the node whether to use channel sounding or
+#              not. Channel sounding is an initialization phase where the
+#              nodes will go through a test step before regular communication.
+#              This ase will measure and log the pathloss and SNR between all
+#              pairs of nodes. If channel sounding is enabled then all nodes
+#              in a test must take part in the process. If channel sounding
+#              is enabled both the fields Lt and id must also be set to meet
+#              the test setup. All other fields are fairly robust and do not
+#              necessarily require additional tweeking if left at default.
+#              Also, please note that all nodes in a test should have the
+#              same channel sounding variables (except for id) since the
+#              statistics at each node assume all other nodes are using the
+#              same variables (this includes the general variables: cs-tx-gain
+#              and cs-rx-gain as well!). Thus if a test is being run where
+#              different nodes have different cs-rx-gains or cs-tx-gains, the
+#              calculated statistics will be incorrect.
+# Development Status Code: VALIDATED
+# Validated Values: {0, 1}
+# Possible Values: {0, 1} which correspond to off and on respectively
+# Default Value: 0 
+# Dependencies: If using channel sounding both the fields id and Lt should be
+#               set to correspond to the test. See descriptions below.
+# Other limitations: Because of USRP manufacturing variations, the channel sounding
+#                    method has only been accurate to about +/- 1 dB.
+chan_sounding_enabled = 0
+
+
+# Name: Number of nodes in the channel sounding test
+# Description: This value tells the channel sounding method how many nodes total will be
+#              taking part in the channel characterization test
+# Development Status Code: VALIDATED
+# Units: Number of nodes
+# Validated Values: [1, 4]
+# Possible Values:  [1, inf]
+# Default: No default. Code errors out if using channel sounding and field is not set.
+# Dependencies: All nodes in a simulation should also take part in the channel sounding test.
+#               Therefore, this number should always equal the number of nodes in the test.
+#               The reason for this is that if some subset of nodes do not take part in the test,
+#               they could go ahead past this step and subsequently get poor pcs calibration and
+#               test metrics.
+# Other limitations: This field along with id (which is unique for each node) are the only two
+#                    fields that must be changed from default per test. If channel sounding is
+#                    disabled then this field is meaningless and can be left alone.
+# Default: No default. Code errors out if using channel sounding and field not set.
+chan_sounding_num_nodes = -1
+
+
+# Name: Channel Sounding ID for THIS node
+# Description: The id this node uses for the channel sounding method.
+# Development Status Code: VALIDATED
+# Units: N/A
+# Validated Values: [1, 4]
+# Possible Values:  [1, 2, 3, ..., Lt]
+# Default: No default. Code errors out if using channel sounding and field is not set.
+# Dependencies: The id should be a number between 1 and Lt (see above) which is unique to this
+#               node. The id will be used to determine which tone slots this node will occupy so
+#               that other nodes may calculate the SNR and pathloss between themselves and this
+#               node. The nodes will report these metrics using this numbering scheme. Note that
+#               since every node in a test will partake in the channel sounding method, there
+#               should be one node corresponding to each number from 1 to Lt.
+# Other limitations: This field along with Lt are the only two fields that must be changed from
+#                    default per test. If channel sounding is disabled then this field is
+#                    meaningless and can be left alone.
+chan_sounding_node_id = -1
+
+
+#===========================================================================
+#[CHANNEL SOUNDING] LOW-LEVEL PARAMETERS
+#===========================================================================
+# Name: Number of FFT bins
+# Description: The number of FFT bins taken during channel probing.
+# Development Status Code: VALIDATED
+# Units: No. of bins
+# Validated Value Range: [32-128]
+# Possible Value Range:  [1, inf]
+# Default Value: 64
+# Dependencies: The number of fft bins used should be >= 2*K + 1 where K is the number of fft
+#               bins used in the method (see below). A bigger fft gives better channel
+#               sensing granularity but at the expense of more computation.
+# Other limitations: Recommend keeping this number to 2^k where k is an integer. Reasonable size
+#                    FFTs should be used (ie, probably no bigger than 512).
+chan_sounding_num_tx_tones = 64
+
+
+# Name: Number of FFT bins to use
+# Description: The number of FFT bins used to do the channel probing
+# Development Status Code: VALIDATED
+# Units: No. of bins
+# Validated Value Ragne: [1, 64]
+# Possible Value Range:  [1, inf]
+# Default Value: -1 which causes code to select an appropriate value (recommended)
+# Dependencies: K <= 2*nfft + 1 where nfft is the number of fft bins defined above. Also, K should
+#               be a multiple of Lt the number of nodes in the test (also defined above). A
+#               larger K increases spectrum granularity but at the expense of more computation.
+# Other limitations: Setting K to -1 will cause the code to chose a large number that meets the
+#                    above requirements.
+chan_sounding_num_rx_tones = -1
+
+
+# Name: Number of averages to take
+# Description: The number of FFT averages to take the channel measurements over. Smooths out
+#              statistical variations in measurements.
+# Development Status Code: VALIDATED
+# Units: number of averages (integer)
+# Validated Value Range: [1, 1e3]
+# Possible Value Range:  [1, inf]
+# Default Value: 10
+# Dependencies: The more averages taken, the longer it takes the code to sample the channel. This
+#               has an immediate impact on the values of wait-noise, wait-tx, wait-sig, and 
+#               wait-quit values. The amount of time in samples the code needs to sample the channel
+#               for measuring noise and signal is nfft*n-avg each. Therefore, the difference
+#               between wait-tx and wait-noise AND the difference between wait-quit and wait-sig
+#               must be greater than this number. In reality because of bootup time variations
+#               you want these time intervals to be quite a bit larger than nfft-n-avg.
+# Other limitations: Build in slack time. You want all the nodes to overlap in there noise and
+#                    signal measuring phases. If you leave all the wait-X variables to -1, the
+#                    code will do this for you.
+chan_sounding_num_averages = 10
+
+
+# Name: Samples to wait before measuring noise
+# Description: The samples the code waits before it starts to measure the noise. The code goes
+#              through 2 measurement phases which are dictated by four wait-X input variables.
+#              The first phase is the noise measurement phase when all nodes semi-simutaneously
+#              measure the channel when no one is transmitting. The second phase the nodes measure
+#              the channel while they are all transmitting semi-simutaneously at different tones.
+#              Because of bootup time differences between the nodes, however, realize that this
+#              is all very loose and that slack/guard time between these intervals must be chosen
+#              to insure that when the actual sensing is being done, all nodes are behaving by
+#              either not transmitting or transmitting at the right time.
+#              The first variable used to control this process is wait-noise (ie, this one).
+#              Wait-noise tells the nodes how many samples to wait after boot-up before measuring
+#              the channel. This gives some time for osciallators to settle to steady state before
+#              taking the noise only measurement of the channel. See the other wait-X values
+#              to see what they specifically mean.
+#              Note: if you leave the wait-X variables all to -1, the code will automatically
+#              setup good values using the nfft and n-avg provided above.
+# Development Status Code: VALIDATED
+# Units: samples
+# Range of Units: [1, inf]
+# Dependencies: Many! Depends on wait-noise, wait-tx, wait-sig, wait-quit, nfft, and n-avg.
+#               See description field of wait-noise for more details. When at -1 the code
+#               will setup good values.
+# Other limitations: none
+# Default: -1
+chan_sounding_noise_delay = -1
+
+
+# Name: Samples to wait before beginning transmission of tonal signal
+# Description: Please read the description of the wait-noise variable before reading this
+#              description. This variable determines after how many samples SINCE STARTUP
+#              the node should wait before transmitting the tones which will be used
+#              (after the time specified by wait-sig) to do the channel measurements while nodes
+#              are transmitting. Note that you DO NOT want to be transmitting while some nodes
+#              are still measuring the noise only channel characteristics. For this reason at an
+#              absolute feasible minimum wait-sig > wait-noise + n-avg*nfft. In reality slack time
+#              should be built in to take into account the difference in bootup times of the
+#              different nodes.
+#              Note: if you leave the wait-X variables all to -1, the code will automatically
+#              setup good values using the nfft and n-avg provided above.
+# Development Status Code: VALIDATED
+# Units: samples
+# Range of Units: [1, inf]
+# Dependencies: Many! Depends on wait-noise, wait-tx, wait-sig, wait-quit, nfft, and n-avg.
+#               See description field of wait-noise for more details. When at -1 the code
+#               will setup good values.
+# Other limitations: none
+# Default: -1
+chan_sounding_tx_delay = -1
+
+
+# Name: Samples to wait before beginning sensing of transmission tonals signals
+# Description: Please read the description of the wait-noise variable before reading this
+#              description. This variable determines the number of samples SINCE STARTUP
+#              the ndoe should wait before sensing the channel to measure the tones which should
+#              by now be transmitted by all nodes. Since you want to sense the channel while all
+#              nodes are transmitting, wait-sig > wait-tx at a very minimum. In reality, b/c of
+#              bootup time differences slack time should be built into this variable.
+#              Note: if you leave the wait-X variables all to -1, the code will automatically
+#              setup good values using the nfft and n-avg provided above.
+# Development Status Code: VALIDATED
+# Units: samples
+# Range of Units: [1, inf]
+# Dependencies: Many! Depends on wait-noise, wait-tx, wait-sig, wait-quit, nfft, and n-avg.
+#               See description field of wait-noise for more details. When at -1 the code
+#               will setup good values.
+# Other limitations: none
+# Default: -1
+chan_sounding_rx_delay = -1
+
+
+# Name: Stop channel sounding method.
+# Description: Please read the description of the wait-noise variable before reading this
+#              description. The number of samples since STARTUP before the nodes stop transmitting
+#              the signals needed to do the channel sounding methods second phase. Since the
+#              nodes will need to sense this signal during the second phase, this variable should
+#              be at an absolute minimum wait-quit > wait-tx + nfft*n-avg. In reality because of
+#              bootup time differences, this number should be larger.
+#              Note: if you leave the wait-X variables all to -1, the code will automatically
+#              setup good values using the nfft and n-avg provided above.
+# Development Status Code: VALIDATED
+# Units: samples
+# Range of Units: [1, inf]
+# Dependencies: Many! Depends on wait-noise, wait-tx, wait-sig, wait-quit, nfft, and n-avg.
+#               See description field of wait-noise for more details. When at -1 the code
+#               will setup good values.
+# Other limitations: none
+# Default: -1
+chan_sounding_quit_delay = -1
+
+
+# Name: Search Size for low PAPR Signal
+# Description: The number of random searches to perform to try to find a random low PAPR
+#              OFDM-like signal for doing the second phase of the channel sounding technique.
+# Development Status Code: VALIDATED
+# Units: number of random tries
+# Range of Units: [1, inf]
+# Dependencies: More searches will yield lower PAPR signals however you want a signal to be found
+#               prior to reaching wait-tx time. It is hard to know when this threshold is crossed.
+#               If having problems in getting accurate SNR calculations try decreasing number.
+#               In reality this has not been an issue so far though and the default should
+#               be good enough for almost any real scenario.
+# Other limitations: none
+# Default: 20000
+chan_sounding_search_size = 20000
+
+
+# Name: Digital Scale
+# Description: A digital amplitude scale to apply to the OFDM-like transmitted signal before
+#              sending to the analog front-end.
+# Development Status Code: VALIDATED
+# Units: discrete amplitude
+# Range of Units: [0, inf]
+# Dependencies: You do not want to scale the discrete symbol to be greater than the D/A 
+#               maximum input. The report of the channel sounding function reports
+#               what the maximum value of the signal is so you can check this. Also if it is
+#               greater than 1 a clipping warning will be printed to screen.
+# Other limitations: Practical experience shows that this number should be kept between 0 and 1.
+#                    In general you will want to set this number so that the peak of the OFDM-
+#                    like channel sounding signal never rises above 1. Check screen output to
+#                    make sure this is true.
+# Default: 0.25
+chan_sounding_signal_scale = 0.25
+
+
+# Name: cs_rf_tx_gain
+# Description: UHD transmitter gain. Controls the digital attenuator to limit transmit
+#              path gain. Gain used during channel sounding method (as opposed to normal
+#              communications). 
+# Development Status Code: VALIDATED
+# Units: dB
+# Range of Units: 0-31.5
+# Dependencies: All nodes participating in a channel sounding test should have the same cs-tx-gain
+#               values as each other.
+# Other limitations: None
+# Default: 10
+chan_sounding_tx_gain = 10
+
+
+# Name: cs_rf_rx_gain
+# Description: UHD receiver gain. Controls the digital attenuator to limit receive
+#              path gain. Gain used during channel sounding method (as opposed to normal
+#              communications).
+# Development Status Code: VALIDATED
+# Units: dB
+# Range of Units: 0-31.5
+# Dependencies: All nodes participating in a channel sounding test should have the same cs-rx-gain
+#               values as each other.
+# Other limitations: None
+# Default: 0
+chan_sounding_tx_gain = 0
